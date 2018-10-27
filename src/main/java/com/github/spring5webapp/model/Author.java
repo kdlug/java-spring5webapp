@@ -2,11 +2,16 @@ package com.github.spring5webapp.model;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 public class Author {
 
+    // Id is generated at time of persistence
+    // If we use generation type of AUTO, ID values going to get changed when the object is persisted for the first time
+    // It could cause problems within a set
+    // Hibernate recommends to use unique business key f.ex. fist name, last name
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private  Long id;
@@ -61,5 +66,28 @@ public class Author {
 
     public void setBooks(Set<Book> books) {
         this.books = books;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return Objects.equals(id, author.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", books=" + books +
+                '}';
     }
 }
